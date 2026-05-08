@@ -22,26 +22,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-dvh flex-col">
-    <Header
-      :active-scenario="activeScenario"
-      @back="endSession"
-    />
+  <div class="flex h-dvh w-full items-center justify-center overflow-hidden">
+    <!-- App Container -->
+    <div class="relative flex h-full w-full max-w-2xl flex-col bg-[var(--color-bg-primary)] sm:border-x sm:border-[var(--color-border)] sm:shadow-2xl">
+      <Header
+        :active-scenario="activeScenario"
+        @back="endSession"
+      />
 
-    <!-- Scenario picker (no active session) -->
-    <ScenarioPicker
-      v-if="!activeScenario"
-      :scenarios="scenarios"
-      :is-loading="isLoading"
-      @select="startSession"
-    />
+      <!-- Scenario picker (no active session) -->
+      <ScenarioPicker
+        v-if="!activeScenario"
+        :scenarios="scenarios"
+        :is-loading="isLoading"
+        @select="startSession"
+        class="overflow-y-auto"
+      />
 
-    <!-- Chat window (active session) -->
-    <ChatWindow
-      v-else
-      :messages="messages"
-      :is-loading="isLoading"
-      @send="sendMessage"
-    />
+      <!-- Chat window (active session) -->
+      <ChatWindow
+        v-else
+        :messages="messages"
+        :is-loading="isLoading"
+        @send="sendMessage"
+        class="flex-1 overflow-hidden"
+      />
+    </div>
   </div>
 </template>

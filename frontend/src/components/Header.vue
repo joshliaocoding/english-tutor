@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { Scenario } from '../types'
+import Button from 'primevue/button';
+import Avatar from 'primevue/avatar';
 
 defineProps<{
   activeScenario: Scenario | null
@@ -12,43 +14,45 @@ defineEmits<{
 
 <template>
   <header
-    class="sticky top-0 z-50 glass border-b border-[var(--color-border)] px-4 py-3 sm:px-6"
+    class="sticky top-0 z-50 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] px-2 py-2 sm:px-4"
   >
-    <div class="mx-auto flex max-w-4xl items-center gap-3">
+    <div class="mx-auto flex w-full items-center gap-2">
       <!-- Back button (visible when in a chat) -->
-      <button
+      <Button
         v-if="activeScenario"
         id="header-back-btn"
-        class="flex items-center justify-center rounded-lg p-2 text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-bg-card-hover)] hover:text-[var(--color-text-primary)]"
+        icon="pi pi-arrow-left"
+        text
+        severity="secondary"
+        rounded
+        class="!w-10 !h-10 !p-0 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card-hover)] hover:text-[var(--color-text-primary)] transition-all duration-200"
         @click="$emit('back')"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5" /><path d="M12 19l-7-7 7-7" />
-        </svg>
-      </button>
+      />
 
       <!-- Logo + Title -->
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-3 ml-1 cursor-pointer">
+        <Avatar
+          v-if="activeScenario"
+          label="AI"
+          shape="circle"
+          class="bg-gradient-to-br from-[var(--color-accent)] to-sky-600 text-white font-bold shadow-md shrink-0 !w-10 !h-10 text-base"
+        />
         <div
-          class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-emerald-600 text-lg font-bold text-white shadow-lg"
+          v-else
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-sky-600 text-lg font-bold text-white shadow-lg"
         >
           S
         </div>
-        <div>
-          <h1 class="text-lg font-semibold leading-tight text-[var(--color-text-primary)]">
-            SpeakEasy
+
+        <div class="flex flex-col justify-center">
+          <h1 class="text-base font-semibold leading-tight text-[var(--color-text-primary)]">
+            {{ activeScenario ? 'AI Tutor' : 'SpeakEasy' }}
           </h1>
-          <p
-            v-if="activeScenario"
-            class="text-xs text-[var(--color-text-secondary)] leading-tight"
-          >
-            {{ activeScenario.title }}
-          </p>
-          <p
-            v-else
-            class="text-xs text-[var(--color-text-secondary)] leading-tight"
-          >
-            Practice natural English
+          <p class="text-[13px] text-[var(--color-text-secondary)] mt-0.5 leading-tight flex items-center gap-1.5">
+            <span v-if="activeScenario" class="w-1.5 h-1.5 rounded-full bg-[var(--color-success)] shadow-[0_0_5px_var(--color-success)]"></span>
+            <span class="truncate max-w-[200px] sm:max-w-[300px]">
+              {{ activeScenario ? 'online • ' + activeScenario.title : 'Practice natural English' }}
+            </span>
           </p>
         </div>
       </div>

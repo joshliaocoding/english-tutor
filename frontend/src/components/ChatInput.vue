@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import Textarea from 'primevue/textarea';
+import Button from 'primevue/button';
 
 defineProps<{
   isLoading: boolean
@@ -26,41 +28,29 @@ function handleKeydown(e: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-3 sm:p-4">
-    <div class="mx-auto flex max-w-3xl items-end gap-3">
+  <div class="bg-[var(--color-bg-primary)] p-2 sm:p-3 border-t border-[var(--color-border)]">
+    <div class="mx-auto flex w-full items-end gap-2">
       <div class="relative flex-1">
-        <textarea
+        <Textarea
           id="chat-input"
           v-model="inputText"
           rows="1"
-          placeholder="Type your message in English..."
-          class="w-full resize-none rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-input)] px-4 py-3 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none transition-all duration-200 focus:border-[var(--color-border-accent)] focus:shadow-[0_0_20px_var(--color-accent-glow)]"
+          autoResize
+          placeholder="Message"
+          class="w-full !rounded-3xl !bg-[var(--color-bg-input)] !text-[var(--color-text-primary)] !border-[var(--color-border)] !px-4 !py-3 !min-h-[44px] !max-h-[120px] focus:!border-[var(--color-border-accent)] transition-all duration-200"
           :disabled="isLoading"
           @keydown="handleKeydown"
         />
       </div>
 
-      <button
+      <Button
         id="send-btn"
-        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-[var(--color-accent)] to-emerald-600 text-white shadow-lg transition-all duration-200 hover:shadow-[0_0_20px_var(--color-accent-glow-strong)] hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+        icon="pi pi-send"
+        class="!h-[44px] !w-[44px] shrink-0 !rounded-full !bg-gradient-to-br !from-[var(--color-accent)] !to-sky-600 !border-none !text-white shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
+        :loading="isLoading"
         :disabled="isLoading || !inputText.trim()"
         @click="handleSend"
-      >
-        <!-- Send icon -->
-        <svg
-          v-if="!isLoading"
-          width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-        >
-          <path d="M22 2L11 13" /><path d="M22 2L15 22L11 13L2 9L22 2Z" />
-        </svg>
-        <!-- Loading spinner -->
-        <svg
-          v-else
-          class="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none"
-        >
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="31.4 31.4" stroke-linecap="round" />
-        </svg>
-      </button>
+      />
     </div>
   </div>
 </template>

@@ -4,6 +4,8 @@ import type { ChatMessage as ChatMessageType } from '../types'
 import ChatMessage from './ChatMessage.vue'
 import ChatInput from './ChatInput.vue'
 import FeedbackPanel from './FeedbackPanel.vue'
+import ScrollPanel from 'primevue/scrollpanel';
+import Avatar from 'primevue/avatar';
 
 const props = defineProps<{
   messages: ChatMessageType[]
@@ -14,7 +16,7 @@ const emit = defineEmits<{
   send: [message: string]
 }>()
 
-const messagesContainer = ref<HTMLElement | null>(null)
+const messagesContainer = ref<any>(null)
 
 // Get the latest AI message's feedback
 const latestFeedback = computed(() => {
@@ -46,7 +48,10 @@ watch(
 
 function scrollToBottom() {
   if (messagesContainer.value) {
-    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+    // ScrollPanel ref exposes the internal element or we can just scroll the first child
+    const el = messagesContainer.value.$el || messagesContainer.value;
+    const content = el.querySelector('.p-scrollpanel-content') || el;
+    content.scrollTop = content.scrollHeight;
   }
 }
 </script>
@@ -54,9 +59,13 @@ function scrollToBottom() {
 <template>
   <div class="flex flex-1 flex-col overflow-hidden">
     <!-- Messages area -->
-    <div
+    <ScrollPanel
       ref="messagesContainer"
-      class="flex-1 overflow-y-auto px-3 py-4 sm:px-4 sm:py-6"
+      class="flex-1 w-full"
+      :pt="{
+        content: 'px-3 py-4 sm:px-4 sm:py-6',
+        bary: 'bg-[var(--color-border)] opacity-50'
+      }"
     >
       <div class="mx-auto max-w-3xl space-y-4">
         <ChatMessage
@@ -68,12 +77,9 @@ function scrollToBottom() {
         <!-- Loading indicator -->
         <div
           v-if="isLoading"
-          class="flex items-center gap-3 animate-fade-in"
+          class="flex items-center gap-2 px-2 sm:px-4 animate-fade-in"
         >
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-emerald-600 text-sm font-bold text-white shadow-md">
-            AI
-          </div>
-          <div class="glass-strong rounded-2xl rounded-bl-md px-4 py-3">
+          <div class="bg-[var(--color-bg-card)] backdrop-blur-xl border border-[var(--color-border)] rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
             <div class="flex items-center gap-1.5">
               <span
                 v-for="i in 3"
@@ -85,7 +91,7 @@ function scrollToBottom() {
           </div>
         </div>
       </div>
-    </div>
+    </ScrollPanel>
 
     <!-- Feedback panel (shows below messages, above input) -->
     <FeedbackPanel
