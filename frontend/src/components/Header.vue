@@ -9,6 +9,7 @@ defineProps<{
 
 defineEmits<{
   back: []
+  logout: []
 }>()
 </script>
 
@@ -55,6 +56,19 @@ defineEmits<{
             </span>
           </p>
         </div>
+      </div>
+
+      <!-- Logout button -->
+      <div class="ml-auto">
+        <Button
+          icon="pi pi-sign-out"
+          text
+          severity="danger"
+          rounded
+          class="!w-10 !h-10 !p-0 text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card-hover)] hover:text-[var(--color-error)] transition-all duration-200"
+          @click="$emit('logout')"
+          v-tooltip.bottom="'Log out'"
+        />
       </div>
     </div>
   </header>

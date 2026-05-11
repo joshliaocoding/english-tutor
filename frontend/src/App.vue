@@ -1,24 +1,18 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useChat } from './composables/useChat'
+import { useAuth } from './composables/useAuth'
 import Header from './components/Header.vue'
-import ScenarioPicker from './components/ScenarioPicker.vue'
-import ChatWindow from './components/ChatWindow.vue'
 
-const {
-  scenarios,
-  messages,
-  activeScenario,
-  isLoading,
-  fetchScenarios,
-  startSession,
-  sendMessage,
-  endSession,
-} = useChat()
+const router = useRouter()
+const route = useRoute()
+const { activeScenario, endSession } = useChat()
+const { logout } = useAuth()
 
-onMounted(() => {
-  fetchScenarios()
-})
+const handleBack = () => {
+  endSession()
+  router.push('/')
+}
 </script>
 
 <template>
@@ -26,27 +20,13 @@ onMounted(() => {
     <!-- App Container -->
     <div class="relative flex h-full w-full flex-col bg-[var(--color-bg-primary)] sm:border-x sm:border-[var(--color-border)] sm:shadow-2xl">
       <Header
+        v-if="!['login', 'register'].includes(route.name as string)"
         :active-scenario="activeScenario"
-        @back="endSession"
+        @back="handleBack"
+        @logout="logout"
       />
 
-      <!-- Scenario picker (no active session) -->
-      <ScenarioPicker
-        v-if="!activeScenario"
-        :scenarios="scenarios"
-        :is-loading="isLoading"
-        @select="startSession"
-        class="overflow-y-auto"
-      />
-
-      <!-- Chat window (active session) -->
-      <ChatWindow
-        v-else
-        :messages="messages"
-        :is-loading="isLoading"
-        @send="sendMessage"
-        class="flex-1 overflow-hidden"
-      />
+      <router-view />
     </div>
   </div>
 </template>

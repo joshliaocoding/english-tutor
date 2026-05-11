@@ -11,13 +11,25 @@ import (
 // GORM Models (database tables)
 // ============================================================
 
+// User represents a registered user.
+type User struct {
+	ID           uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	Username     string    `gorm:"uniqueIndex;not null" json:"username"`
+	Email        string    `gorm:"uniqueIndex;not null" json:"email"`
+	PasswordHash string    `gorm:"not null" json:"-"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+	Sessions     []Session `gorm:"foreignKey:UserID" json:"sessions,omitempty"`
+}
+
 // Session represents a conversation session tied to a scenario.
 type Session struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-	ScenarioID string    `gorm:"not null" json:"scenarioId"`
-	Messages   []Message `gorm:"foreignKey:SessionID" json:"messages,omitempty"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	ID         uuid.UUID  `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	UserID     *uuid.UUID `gorm:"type:uuid;index" json:"userId"` // Made nullable for migration safety
+	ScenarioID string     `gorm:"not null" json:"scenarioId"`
+	Messages   []Message  `gorm:"foreignKey:SessionID" json:"messages,omitempty"`
+	CreatedAt  time.Time  `json:"createdAt"`
+	UpdatedAt  time.Time  `json:"updatedAt"`
 }
 
 // Message represents a single message in a conversation.
@@ -34,6 +46,25 @@ type Message struct {
 // ============================================================
 // DTOs (request/response payloads)
 // ============================================================
+
+// RegisterRequest is the payload for POST /api/auth/register.
+type RegisterRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// LoginRequest is the payload for POST /api/auth/login.
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// AuthResponse is returned on successful login/register.
+type AuthResponse struct {
+	Token string `json:"token"`
+	User  User   `json:"user"`
+}
 
 // Scenario describes a conversation scenario the user can pick.
 type Scenario struct {

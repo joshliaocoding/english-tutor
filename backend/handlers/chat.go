@@ -107,10 +107,14 @@ func NewSession(c fiber.Ctx) error {
 		})
 	}
 
+	userIDStr := c.Locals("userID").(string)
+	userUUID, _ := uuid.Parse(userIDStr)
+
 	// Create DB session
 	sessionID := uuid.New()
 	dbSession := models.Session{
 		ID:         sessionID,
+		UserID:     &userUUID,
 		ScenarioID: req.ScenarioID,
 	}
 	if err := database.DB.Create(&dbSession).Error; err != nil {
@@ -165,11 +169,19 @@ func SendMessage(c fiber.Ctx) error {
 		})
 	}
 
-	// Verify session exists in DB
+	userIDStr := c.Locals("userID").(string)
+
+	// Verify session exists in DB and belongs to user
 	var session models.Session
 	if err := database.DB.First(&session, "id = ?", sessionUUID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Session not found",
+		})
+	}
+
+	if session.UserID == nil || session.UserID.String() != userIDStr {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error": "Access denied",
 		})
 	}
 
@@ -219,6 +231,22 @@ func GetMessages(c fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid session ID",
+		})
+	}
+
+	userIDStr := c.Locals("userID").(string)
+
+	// Verify session belongs to user
+	var session models.Session
+	if err := database.DB.First(&session, "id = ?", sessionUUID).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Session not found",
+		})
+	}
+
+	if session.UserID == nil || session.UserID.String() != userIDStr {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error": "Access denied",
 		})
 	}
 
