@@ -15,11 +15,11 @@ defineEmits<{
 <template>
   <div class="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:py-12">
     <!-- Hero section -->
-    <div class="mb-10 text-center animate-fade-in-up sm:mb-14">
-      <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--color-accent)] to-sky-600 text-3xl shadow-lg glow-accent sm:h-20 sm:w-20 sm:text-4xl">
+    <div class="mb-5 text-center animate-fade-in-up">
+      <!-- <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--color-accent)] to-sky-600 text-3xl shadow-lg glow-accent sm:h-20 sm:w-20 sm:text-4xl">
         💬
-      </div>
-      <h2 class="mb-3 text-2xl font-bold text-[var(--color-text-primary)] sm:text-3xl">
+      </div> -->
+      <h2 class="mt-6 mb-3 text-2xl font-bold text-[var(--color-text-primary)] sm:text-3xl">
         Choose a Scenario
       </h2>
       <p class="mx-auto max-w-md text-sm text-[var(--color-text-secondary)] sm:text-base">
@@ -28,12 +28,12 @@ defineEmits<{
     </div>
 
     <!-- Scenario cards grid -->
-    <div class="mx-auto grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="mx-auto grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-3">
       <Card
         v-for="(scenario, index) in scenarios"
         :key="scenario.id"
         :id="`scenario-${scenario.id}`"
-        class="group glass rounded-2xl text-left transition-all duration-300 hover:bg-[var(--color-bg-card-hover)] hover:border-[var(--color-border-accent)] hover:glow-accent-strong hover:scale-[1.02] active:scale-[0.98] cursor-pointer overflow-hidden border border-[var(--color-border)]"
+        class="group glass rounded-2xl text-left transition-all duration-300 hover:bg-[var(--color-bg-card-hover)] hover:border-[var( --color-border-accent)] hover:glow-accent-strong hover:scale-[1.02] active:scale-[0.98] cursor-pointer overflow-hidden border border-[var(--color-border)]"
         :class="['animate-fade-in-up', isLoading ? 'opacity-50 pointer-events-none' : '']"
         :style="{ animationDelay: `${index * 80}ms` }"
         @click="$emit('select', scenario)"
