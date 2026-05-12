@@ -44,7 +44,7 @@ func Connect() {
 	sqlDB.SetMaxOpenConns(100)
 
 	// AutoMigrate creates/updates tables
-	err = DB.AutoMigrate(&models.Session{}, &models.Message{})
+	err = DB.AutoMigrate(&models.User{}, &models.Session{}, &models.Message{})
 	if err != nil {
 		log.Fatalf("Failed to auto-migrate: %v", err)
 	}

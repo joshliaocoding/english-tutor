@@ -6,6 +6,7 @@ import (
 
 	"english-tutor/backend/database"
 	"english-tutor/backend/handlers"
+	"english-tutor/backend/middleware"
 	"english-tutor/backend/services"
 
 	"github.com/gofiber/fiber/v3"
@@ -41,10 +42,23 @@ func main() {
 
 	// API routes
 	api := app.Group("/api")
+
+	// Auth routes
+	auth := api.Group("/auth")
+	auth.Post("/register", handlers.Register)
+	auth.Post("/login", handlers.Login)
+	auth.Get("/me", middleware.Protected(), handlers.GetMe)
+
+	// Public routes
 	api.Get("/scenarios", handlers.GetScenarios)
-	api.Post("/chat/new", handlers.NewSession)
-	api.Post("/chat", handlers.SendMessage)
-	api.Get("/sessions/:id/messages", handlers.GetMessages)
+
+	// Protected routes
+	chat := api.Group("/chat", middleware.Protected())
+	chat.Post("/new", handlers.NewSession)
+	chat.Post("/", handlers.SendMessage)
+
+	sessions := api.Group("/sessions", middleware.Protected())
+	sessions.Get("/:id/messages", handlers.GetMessages)
 
 	// Get port from env or default to 8080
 	port := os.Getenv("PORT")

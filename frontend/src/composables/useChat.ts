@@ -26,9 +26,13 @@ export function useChat() {
     messages.value = []
 
     try {
+      const token = localStorage.getItem('token')
       const res = await fetch('/api/chat/new', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ scenarioId: scenario.id }),
       })
 
@@ -70,9 +74,13 @@ export function useChat() {
     await nextTick()
 
     try {
+      const token = localStorage.getItem('token')
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
           sessionId: sessionId.value,
           message: text.trim(),
