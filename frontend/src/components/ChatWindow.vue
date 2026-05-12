@@ -64,7 +64,7 @@ function scrollToBottom() {
       class="flex-1 w-full"
       :pt="{
         content: 'px-3 py-4 sm:px-4 sm:py-6',
-        bary: 'bg-[var(--color-border)] opacity-50'
+        barY: 'bg-[var(--color-border)] opacity-50'
       }"
     >
       <div class="mx-auto max-w-3xl space-y-4">
